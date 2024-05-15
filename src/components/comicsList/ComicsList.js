@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -14,7 +15,6 @@ const ComicsList = () => {
   const { loading, error, getAllComics } = useMarvelService();
 
   useEffect(() => {
-    console.log('render');
     onRequest(offset, true);
   }, []);
 
@@ -57,7 +57,7 @@ const ComicsCards = ({ allComics }) => {
       {allComics.map((comic, i) => {
         return (
           <li key={i} className="comics__item">
-            <a href={comic.url}>
+            <Link to={`/comics/${comic.id}`}>
               <img
                 src={comic.thumbnail}
                 alt="x-men"
@@ -65,7 +65,7 @@ const ComicsCards = ({ allComics }) => {
               />
               <div className="comics__item-name">{comic.title}</div>
               <div className="comics__item-price">{comic.price}</div>
-            </a>
+            </Link>
           </li>
         );
       })}

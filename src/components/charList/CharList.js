@@ -16,6 +16,7 @@ const CharList = (props) => {
 
   useEffect(() => {
     onRequest(offset, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onRequest = (offset, initial) => {
@@ -77,7 +78,6 @@ const CharList = (props) => {
   }
 
   const items = renderItems(charList);
-  console.log('CharList');
   const errorMessage = error ? <ErrorMessage /> : null;
   const spinner = loading && !newItemLoading ? <Spinner /> : null;
   return (

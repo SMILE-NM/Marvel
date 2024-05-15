@@ -1,7 +1,11 @@
 const Spinner = () => {
   return (
     <svg
-      style={{ margin: '0 auto', background: 'none', display: 'block' }}
+      style={{
+        margin: '0 auto',
+        background: 'none',
+        display: 'block',
+      }}
       version="1.0"
       width="128px"
       height="128px"
