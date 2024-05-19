@@ -9,17 +9,17 @@ import { object, string } from 'yup';
 import { Link } from 'react-router-dom';
 
 import useMarvelService from '../../services/MarvelService';
-import { ErrorMessage } from 'formik';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './charSearchForm.scss';
 
 const CharSearchForm = () => {
+  const [char, setChar] = useState(null);
+  const { loading, error, getCharacterByName, clearError } = useMarvelService();
+
   const ruleObj = object({
     charName: string().required('This field is required'),
   });
-
-  const [char, setChar] = useState(null);
-  const { loading, error, getCharacterByName, clearError } = useMarvelService();
 
   const onCharLoaded = (char) => {
     console.log(char);
@@ -43,7 +43,7 @@ const CharSearchForm = () => {
         There is! Visit {char[0].name} page?
       </div>
       <Link
-        to={`/characters/${char[0].id}`}
+        to={`/character/${char[0].id}`}
         className="button button__secondary"
       >
         <div className="inner">To page</div>
@@ -54,7 +54,6 @@ const CharSearchForm = () => {
       The character was not found. Check the name and try again
     </div>
   );
-
   return (
     <div className="char__search-form">
       <Formik
