@@ -22,7 +22,6 @@ const CharSearchForm = () => {
   });
 
   const onCharLoaded = (char) => {
-    console.log(char);
     setChar(char);
   };
 

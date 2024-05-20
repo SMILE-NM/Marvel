@@ -1,10 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './comicsList.scss';
+
+const setContent = (process, Component, newItemLoading) => {
+  switch (process) {
+    case 'waiting':
+      return <Spinner />;
+    case 'loading':
+      return newItemLoading ? <Component /> : <Spinner />;
+    case 'confirmed':
+      return <Component />;
+    case 'error':
+      return <ErrorMessage />;
+    default:
+      throw new Error('Unexpected process state');
+  }
+};
 
 const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
@@ -12,15 +28,18 @@ const ComicsList = () => {
   const [offset, setOffset] = useState(210);
   const [comicEnded, setComicEnded] = useState(false);
 
-  const { loading, error, getAllComics } = useMarvelService();
+  const { getAllComics, process, setProcess } = useMarvelService();
 
   useEffect(() => {
     onRequest(offset, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-    getAllComics(offset).then(onComicsListLoaded);
+    getAllComics(offset)
+      .then(onComicsListLoaded)
+      .then(() => setProcess('confirmed'));
   };
 
   const onComicsListLoaded = (newComicsList) => {
@@ -31,14 +50,17 @@ const ComicsList = () => {
     setOffset((offset) => offset + 8);
     setComicEnded(ended);
   };
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading && !newItemLoading ? <Spinner /> : null;
 
   return (
     <div className="comics__list">
-      {errorMessage}
-      {spinner}
-      <ComicsCards allComics={comicsList} />
+      {setContent(
+        process,
+        () => (
+          <ComicsCards data={comicsList} />
+        ),
+        newItemLoading,
+      )}
+
       <button
         className="button button__main button__long"
         disabled={newItemLoading}
@@ -51,10 +73,10 @@ const ComicsList = () => {
   );
 };
 
-const ComicsCards = ({ allComics }) => {
+const ComicsCards = ({ data }) => {
   return (
     <ul className="comics__grid">
-      {allComics.map((comic, i) => {
+      {data.map((comic, i) => {
         return (
           <li key={i} className="comics__item">
             <Link to={`/comics/${comic.id}`}>

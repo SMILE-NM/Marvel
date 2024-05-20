@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './singleComicLayout.scss';
 
 const SingleComicLayout = ({ data }) => {
-  console.log(data);
   const { title, description, pageCount, thumbnail, language, price } = data;
   return (
     <div className="single-comic">
